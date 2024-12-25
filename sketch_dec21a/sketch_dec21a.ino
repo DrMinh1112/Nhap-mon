@@ -25,7 +25,19 @@ class usonic_ss{
   }
   ~usonic_ss(){}
   void detect(int x); //check xem xe đấy đỗ chx (khoảng cách <= bn đấy thì p[x].check=1 và ngược lại)
-  void rotate(); //quay 3 góc và detect() sử dụng hàm detect ở trên 
+  void rotate(){
+    // Quay servo đến góc 60 độ
+    sv.write(60);
+    delay(1000); // Đợi 1 giây để servo ổn định
+    detect();
+    // Quay servo đến góc 120 độ
+    sv.write(120);
+    delay(1000);
+    detect();
+    // Quay servo đến góc 180 độ
+    sv.write(120);
+    delay(1000);
+    detect();    
 };
 
 usonic_ss ss; //cam bien tên u1 (vì mình có một cảm biến nên khao báo 1 biến thôi nhiều thì sẽ là mảng)
