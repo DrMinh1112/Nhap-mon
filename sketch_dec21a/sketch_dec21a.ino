@@ -40,7 +40,32 @@ void loop() {
   displayonlcd(p);
 }
 
-void usonic_ss:: rotate(); //quay 3 góc và detect() sử dụng hàm detect ở trên
+void usonic_ss:: rotate(p_lot lot, int trigPIn, int echoPin){
+digitalWrite(trigPin,LOW);//setup lại, không truyền điện cho chân trig
+delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);//bắt đầu truyền điện cho chân trig
+delayMicroseconds(20);//chân trig sẽ phát ra sóng siêu âm trong vòng 20 micro giây// NOTE: phát sóng bao lâu là tối ưu?
+digitalWrite(trigPin, LOW);//Tắt chân echo
+
+
+khoang_tg=pulseIn(echoPin, HIGH,1000);//Hàm pulsein đo thời gian micro giây từ lúc chân echo nhận sóng phản hồi(HIGH) đến lúc kết thúc
+quang_dg=ceil(khoang_tg*0.034/2);// công thức tính quãng đường
+
+Serial.println(khoang_tg);
+Serial.println(quang_dg);
+if (quang_dg <= 2){ 
+  lot.check=2;
+  Serial.println(" Da có vat chan cam bien, can di chuyen vat can");
+}
+else if(2<quang_dg&&quang_dg<10){
+  lot.check=1;
+  Serial.println(" Da co xe do o day");
+}
+else{
+ lot.check=0;
+  Serial.println("Bai do con trong");
+};
+}; //quay 3 góc và detect() sử dụng hàm detect ở trên
 
 void usonic_ss::detect();
 
