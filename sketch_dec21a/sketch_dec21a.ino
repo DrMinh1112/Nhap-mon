@@ -28,12 +28,6 @@ class usonic_ss{
   void rotate(); //quay 3 góc và detect() sử dụng hàm detect ở trên 
 };
 
-void usonic_ss:: rotate(); //quay 3 góc và detect() sử dụng hàm detect ở trên
-
-void usonic_ss::detect();
-
-void displayonlcd(p_lot pl[]);
-
 usonic_ss ss; //cam bien tên u1 (vì mình có một cảm biến nên khao báo 1 biến thôi nhiều thì sẽ là mảng)
 
 void setup() {
@@ -45,3 +39,10 @@ void loop() {
   ss.rotate();
   displayonlcd(p);
 }
+
+void usonic_ss:: rotate(); //quay 3 góc và detect() sử dụng hàm detect ở trên
+
+void usonic_ss::detect();
+
+void displayonlcd(p_lot pl[]);
+
