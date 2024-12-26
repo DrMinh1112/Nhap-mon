@@ -1,5 +1,6 @@
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include <Servo.h>
+LiquidCrystal_I2C lcd(___,16,2)
 
 int angle1;
 int angle2;
@@ -46,7 +47,10 @@ void setup() {
   ss.sv.attach(9); //pin cua servo ung voi u1
   pinMode(ss.echopin, OUTPUT);
   pinMode(ss.trigpin, INPUT);
+  lcd.init();
+  lcd.backlight();
 }
+
 void loop() {
   ss.rotate();
   displayonlcd(p);
@@ -56,5 +60,23 @@ void usonic_ss:: rotate(); //quay 3 góc và detect() sử dụng hàm detect �
 
 void usonic_ss::detect();
 
-void displayonlcd(p_lot pl[]);
-
+void displayonlcd(p_lot pl[]) {
+  bool con_slot = false;
+  for (int i = 0; i < 3; i++) {
+    if (pl[i].check == 0) {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print ("Hay do xe vao o: ");
+      lcd.setCursor(0,1);
+      lcd.print (pl[i].name);
+      con_slot = true;
+      break;
+    }
+  }
+  if (con_slot == false) {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print ("Da het cho de xe");
+    lcd.setCursor(0,1);
+    lcd.print ("           ");
+  }
