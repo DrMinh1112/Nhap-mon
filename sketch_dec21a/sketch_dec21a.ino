@@ -29,15 +29,15 @@ class usonic_ss{
     // Quay servo đến góc 60 độ
     sv.write(60);
     delay(1000); // Đợi 1 giây để servo ổn định
-    detect();
+    detect(0);
     // Quay servo đến góc 120 độ
     sv.write(120);
     delay(1000);
-    detect();
+    detect(1);
     // Quay servo đến góc 180 độ
-    sv.write(120);
+    sv.write(180);
     delay(1000);
-    detect();    
+    detect(2);    
 };
 
 usonic_ss ss; //cam bien tên u1 (vì mình có một cảm biến nên khao báo 1 biến thôi nhiều thì sẽ là mảng)
