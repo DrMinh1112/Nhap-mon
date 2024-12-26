@@ -31,6 +31,7 @@ void setup() {
   pinMode(ss.echopin, OUTPUT);
   pinMode(ss.trigpin, INPUT);
 }
+
 void loop() {
   ss.rotate();
   displayonlcd(p);
@@ -38,32 +39,32 @@ void loop() {
 
 
 void usonic_ss:: detect(int x){
-digitalWrite(trigpin,LOW);//setup lại, không truyền điện cho chân trig
-delayMicroseconds(2);
-digitalWrite(trigpin, HIGH);//bắt đầu truyền điện cho chân trig
-delayMicroseconds(20);//chân trig sẽ phát ra sóng siêu âm trong vòng 20 micro giây// NOTE: phát sóng bao lâu là tối ưu?
-digitalWrite(trigpin, LOW);//Tắt chân echo
+  digitalWrite(trigpin,LOW);//setup lại, không truyền điện cho chân trig
+  delayMicroseconds(2);
+  digitalWrite(trigpin, HIGH);//bắt đầu truyền điện cho chân trig
+  delayMicroseconds(20);//chân trig sẽ phát ra sóng siêu âm trong vòng 20 micro giây// NOTE: phát sóng bao lâu là tối ưu?
+  digitalWrite(trigpin, LOW);//Tắt chân echo
+  
+  khoang_tg=pulseIn(echopin, HIGH,1000);//Hàm pulsein đo thời gian micro giây từ lúc chân echo nhận sóng phản hồi(HIGH) đến lúc kết thúc
+  quang_dg=ceil(khoang_tg*0.034/2);// công thức tính quãng đường
 
-
-khoang_tg=pulseIn(echopin, HIGH,1000);//Hàm pulsein đo thời gian micro giây từ lúc chân echo nhận sóng phản hồi(HIGH) đến lúc kết thúc
-quang_dg=ceil(khoang_tg*0.034/2);// công thức tính quãng đường
-
-Serial.println(khoang_tg);
-Serial.println(quang_dg);
-if (quang_dg <= 2){ 
-  p[x].check=2;
-  Serial.println(" Da có vat chan cam bien, can di chuyen vat can");
-}
-else if(2<quang_dg&&quang_dg<10){
-  p[x].check=1;
-  Serial.println(" Da co xe do o day");
-}
-else{
-  p[x].check=0;
-  Serial.println("Bai do con trong");
-};
-}; //quay 3 góc và detect() sử dụng hàm detect ở trên
-  void rotate(){
+  Serial.println(khoang_tg);
+  Serial.println(quang_dg);
+  if (quang_dg <= 2){ 
+    p[x].check=2;
+    Serial.println(" Da có vat chan cam bien, can di chuyen vat can");
+  }
+  else if(2<quang_dg&&quang_dg<10){
+    p[x].check=1;
+    Serial.println(" Da co xe do o day");
+  }
+  else{
+    p[x].check=0;
+    Serial.println("Bai do con trong");
+  }
+}; 
+//quay 3 góc và detect() sử dụng hàm detect ở trên
+void rotate(){
     // Quay servo đến góc 60 độ
     sv.write(60);
     delay(1000); // Đợi 1 giây để servo ổn định
@@ -77,5 +78,25 @@ else{
     delay(1000);
     detect(2);    
 };
-void displayonlcd(p_lot pl[]);
+void displayonlcd(p_lot pl[]) {
+  bool con_slot = false;
+  for (int i = 0; i < 3; i++) {
+    if (pl[i].check == 0) {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print ("Hay do xe vao o: ");
+      lcd.setCursor(0,1);
+      lcd.print (pl[i].name);
+      con_slot = true;
+      break;
+    }
+  }
+  if (con_slot == false) {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print ("Da het cho de xe");
+    lcd.setCursor(0,1);
+    lcd.print ("           ");
+  }
+
 
