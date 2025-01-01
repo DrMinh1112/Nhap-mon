@@ -48,7 +48,7 @@ void usonic_ss:: detect(int x){
   digitalWrite(trigpin,LOW);//setup lại, không truyền điện cho chân trig
   delayMicroseconds(2);
   digitalWrite(trigpin, HIGH);//bắt đầu truyền điện cho chân trig
-  delayMicroseconds(20);//chân trig sẽ phát ra sóng siêu âm trong vòng 20 micro giây// NOTE: phát sóng bao lâu là tối ưu?
+  delayMicroseconds(10);//chân trig sẽ phát ra sóng siêu âm trong vòng 20 micro giây// NOTE: phát sóng bao lâu là tối ưu?
   digitalWrite(trigpin, LOW);//Tắt chân echo
   
   long khoang_tg=pulseIn(echopin, HIGH,1000);//Hàm pulsein đo thời gian micro giây từ lúc chân echo nhận sóng phản hồi(HIGH) đến lúc kết thúc
@@ -74,16 +74,16 @@ void usonic_ss:: detect(int x){
 void usonic_ss::rotate(){
     // Quay servo đến góc 60 độ
     sv.write(60);
-    delay(1000); // Đợi 1 giây để servo ổn định
     detect(id_p_lot[0]);
+    delay(1000); // Đợi 1 giây để servo ổn định
     // Quay servo đến góc 120 độ
     sv.write(120);
-    delay(1000);
     detect(id_p_lot[1]);
+    delay(1000);
     // Quay servo đến góc 180 độ
     sv.write(180);
-    delay(1000);
     detect(id_p_lot[2]);    
+    delay(1000);
 };
 
 void displayonlcd(p_lot pl[]) {
