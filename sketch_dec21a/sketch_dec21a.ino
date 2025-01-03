@@ -33,19 +33,23 @@ public:
     sv.attach(pin);
   }
 };
-usonic_ss ss;  //cam bien tên u1 (vì mình có một cảm biến nên khao báo 1 biến thôi nhiều thì sẽ là mảng)
+int n=1;
+usonic_ss ss[10];  //cam bien tên u1 (vì mình có một cảm biến nên khao báo 1 biến thôi nhiều thì sẽ là mảng)
 
 void setup() {
   Serial.begin(9600);
-  ss.attachServo(9);  //pin cua servo ung voi u1
-  pinMode(ss.echopin, INPUT);
-  pinMode(ss.trigpin, OUTPUT);
+  for (int i = 0; i < n; i++) {
+    ss[i].attachServo(9);  //pin cua servo ung voi u1
+    pinMode(ss[i].echopin, INPUT);
+    pinMode(ss[i].trigpin, OUTPUT);
+  }
   lcd.init();
   lcd.backlight();
 }
 
 void loop() {
-  ss.rotate();
+  for (int i = 0; i < n; i++) { ss[i].rotate(); }
+  for (int i = 0; i < 3; i++) { Serial.println(p[i].check); }
   displayonlcd(p);
 }
 
@@ -58,11 +62,14 @@ void usonic_ss::detect(int x) {
 
   long khoang_tg = pulseIn(echopin, HIGH);     //Hàm pulsein đo thời gian micro giây từ lúc chân echo nhận sóng phản hồi(HIGH) đến lúc kết thúc
   int quang_dg = ceil(khoang_tg * 0.034 / 2);  // công thức tính quãng đường
+  Serial.print("ten o do xe");
+  Serial.print(x);
+  Serial.print("\n");
   Serial.println(quang_dg);
   if (quang_dg <= 2) {
     p[x].check = 2;
     Serial.println(" Da có vat chan cam bien, can di chuyen vat can");
-  } else if (2 < quang_dg && quang_dg < 10) {
+  } else if (2 < quang_dg && quang_dg < 20) {
     p[x].check = 1;
     Serial.println(" Da co xe do o day");
   } else {
@@ -75,16 +82,16 @@ void usonic_ss::detect(int x) {
 void usonic_ss::rotate() {
   // Quay servo đến góc 60 độ
   sv.write(60);
-  detect(id_p_lot[0]);
-  delay(2000);  // Đợi 1 giây để servo ổn định
+  detect(id_p_lot[2]);
+  delay(3000);  // Đợi 1 giây để servo ổn định
   // Quay servo đến góc 120 độ
   sv.write(120);
-  detect(id_p_lot[1]);
-  delay(2000);
+  detect(id_p_lot[0]);
+  delay(3000);
   // Quay servo đến góc 180 độ
   sv.write(180);
-  detect(id_p_lot[2]);
-  delay(2000);
+  detect(id_p_lot[1]);
+  delay(3000);
 };
 
 void displayonlcd(p_lot pl[]) {
