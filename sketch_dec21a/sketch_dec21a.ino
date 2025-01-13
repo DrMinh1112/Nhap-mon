@@ -2,9 +2,9 @@
 #include <Servo.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-int angle1;
-int angle2;
-int angle3;
+int angle1 = 60;
+int angle2 = 120;
+int angle3 = 180;
 
 typedef struct {
   char name[10];
@@ -33,7 +33,7 @@ public:
     sv.attach(pin);
   }
 };
-int n=1;
+int n = 1;
 usonic_ss ss[10];  //cam bien tên u1 (vì mình có một cảm biến nên khao báo 1 biến thôi nhiều thì sẽ là mảng)
 
 void setup() {
@@ -48,9 +48,16 @@ void setup() {
 }
 
 void loop() {
+  Serial.println("START");
   for (int i = 0; i < n; i++) { ss[i].rotate(); }
-  for (int i = 0; i < 3; i++) { Serial.println(p[i].check); }
+  for (int i = 0; i < 3; i++) {
+    Serial.println(p[i].name);
+    Serial.println(" ")
+    Serial.println(p[i].check);
+    Serial.println("\n");
+  }
   displayonlcd(p);
+  delay(1000);
 }
 
 void usonic_ss::detect(int x) {
@@ -62,36 +69,29 @@ void usonic_ss::detect(int x) {
 
   long khoang_tg = pulseIn(echopin, HIGH);     //Hàm pulsein đo thời gian micro giây từ lúc chân echo nhận sóng phản hồi(HIGH) đến lúc kết thúc
   int quang_dg = ceil(khoang_tg * 0.034 / 2);  // công thức tính quãng đường
-  Serial.print("ten o do xe");
-  Serial.print(x);
-  Serial.print("\n");
-  Serial.println(quang_dg);
   if (quang_dg <= 2) {
     p[x].check = 2;
-    Serial.println(" Da có vat chan cam bien, can di chuyen vat can");
   } else if (2 < quang_dg && quang_dg < 20) {
     p[x].check = 1;
-    Serial.println(" Da co xe do o day");
   } else {
     p[x].check = 0;
-    Serial.println("Bai do con trong");
   }
 };
 
 //quay 3 góc và detect() sử dụng hàm detect ở trên
 void usonic_ss::rotate() {
   // Quay servo đến góc 60 độ
-  sv.write(60);
+  sv.write(angle1);
   detect(id_p_lot[2]);
-  delay(3000);  // Đợi 1 giây để servo ổn định
+  delay(1000);  // Đợi 1 giây để servo ổn định
   // Quay servo đến góc 120 độ
-  sv.write(120);
+  sv.write(angle2);
   detect(id_p_lot[0]);
-  delay(3000);
+  delay(1000);
   // Quay servo đến góc 180 độ
-  sv.write(180);
+  sv.write(angle3);
   detect(id_p_lot[1]);
-  delay(3000);
+  delay(1000);
 };
 
 void displayonlcd(p_lot pl[]) {
